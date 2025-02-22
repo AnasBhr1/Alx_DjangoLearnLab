@@ -17,12 +17,12 @@ class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
-    def user_login(request):
+def user_login(request):
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect('list_books')  # Redirect to book listing after login
+            return redirect('list_books')
     else:
         form = AuthenticationForm()
     return render(request, 'relationship_app/login.html', {'form': form})
