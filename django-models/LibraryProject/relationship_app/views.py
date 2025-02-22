@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.forms import UserCreationForm  # Import missing UserCreationForm
 from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test,
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import permission_required
 from .models import UserProfile
 from .forms import BookForm
