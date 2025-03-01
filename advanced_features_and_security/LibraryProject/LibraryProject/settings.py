@@ -20,12 +20,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)q6$2q!0tb8p1-tt=m90ams$6o8&gluj^1z#%8m$q@m*!xq@)c'
+SECRET_KEY = 'django-insecure-pi90tvf51&pjrqxy)4kn851dylxl2oyi%#%#f+nr+eld28j&nv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
+
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True  # Protect against XSS attacks
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+
+# CSRF & Session Security
+CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Ensure session cookies are sent over HTTPS
+
+# Enforce HTTPS
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow preloading
+
+# ensures that Django recognizes requests as secure when they come through the proxy.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 
 # Application definition
@@ -37,8 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookshelf', # Add this line to the list of installed apps
     'relationship_app',
+    'bookshelf',
 ]
 
 MIDDLEWARE = [
@@ -51,12 +70,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Adding authetication settings
+LOGIN_REDIRECT_URL = "home" #redirect after login
+LOGOUT_REDIRECT_URL = "login" # redirect after logout
+
 ROOT_URLCONF = 'LibraryProject.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "LibraryProject/bookshelf/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,4 +146,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+#assign1 part 5 advanced-features
+
+AUTH_USER_MODEL = 'bookshelf.CustomUser'  # Ensure your app name is correct
+
+# Updating foreign keys in other models
