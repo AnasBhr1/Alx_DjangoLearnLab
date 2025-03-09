@@ -14,4 +14,5 @@ urlpatterns = [
     # Include the router URLs for CRUD operations on the Book model
     path('', include(router.urls)),  # Automatically generates CRUD routes
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api/token/', obtain_auth_token, name='api_token_auth'),
 ]
