@@ -5,6 +5,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from api.models import Book
 from api.serializers import BookSerializer
 from django_filters import rest_framework as filters
+from rest_framework.filters import OrderingFilter
+
 
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
