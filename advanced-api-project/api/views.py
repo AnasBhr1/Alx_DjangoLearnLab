@@ -1,10 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter  # Import OrderingFilter directly
 from api.models import Book
 from api.serializers import BookSerializer
-from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
 
 
