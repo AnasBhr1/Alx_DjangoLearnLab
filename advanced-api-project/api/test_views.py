@@ -3,18 +3,17 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Book
+from rest_framework.test import APITestCase
 
-class BookAPITestCase(TestCase):
+class BookAPITestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.client.force_authenticate(user=self.user)
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')  # Ensure login before requests
+        self.book = Book.objects.create(title="Test Book", author="Author", publication_year=2022)
 
-        self.book1 = Book.objects.create(title="Django for Beginners", author="William S.", publication_year=2021)
-        self.book2 = Book.objects.create(title="REST APIs with Django", author="John Doe", publication_year=2022)
-
-        self.valid_book_data = {"title": "New Book", "author": "Author Name", "publication_year": 2023}
-        self.invalid_book_data = {"title": "", "author": "Author Name", "publication_year": 2023}
+    def test_authenticated_book_creation(self):
+        response = self.client.post('/api/books/', {'title': 'New Book', 'author': 'Someone', 'publication_year': 2023})
+        self.assertEqual(response.status_code, 201)  # Ensure creation works
 
     def test_list_books(self):
         response = self.client.get("/api/books/")
@@ -37,6 +36,3 @@ class BookAPITestCase(TestCase):
     def test_delete_book(self):
         response = self.client.delete(f"/api/books/{self.book1.id}/")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-git add .
-git commit -m "Added unit tests for API endpoints"
-git push origin main
