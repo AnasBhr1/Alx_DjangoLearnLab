@@ -10,3 +10,13 @@
         {% endfor %}
     </ul>
 {% endblock %}
+
+{% for post in posts %}
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <div>
+        {% for tag in post.tags.all %}
+            <a href="{% url 'tagged_posts' tag.name %}">{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+{% endfor %}

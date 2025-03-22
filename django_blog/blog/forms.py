@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .models import Post
 from .models import Comment
+from .models import Post, Tag
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField()
@@ -30,3 +31,10 @@ class CommentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({'placeholder': 'Add a comment...', 'rows': 3})
+
+class PostForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
