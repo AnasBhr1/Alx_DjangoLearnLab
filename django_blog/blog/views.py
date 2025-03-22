@@ -1,101 +1,63 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm
-from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-# Registration view
-def register(request):
-    if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log the user in after registration
-            messages.success(request, "Registration successful!")
-            return redirect('home')
-        else:
-            messages.error(request, "Error in registration")
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'blog/register.html', {'form': form})
-
-# Login view
-def login_view(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, "Invalid credentials")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'blog/login.html', {'form': form})
-
-# Logout view
-def logout_view(request):
-    logout(request)
-    return redirect('home')
-
-# Profile view
-def profile(request):
-    if request.method == "POST":
-        user = request.user
-        user.email = request.POST.get('email', user.email)
-        user.save()
-        messages.success(request, "Profile updated successfully!")
-    return render(request, 'blog/profile.html')
-
+# ListView to display all blog posts
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
+    paginate_by = 10  # Optional: for pagination
 
+# DetailView to show a single blog post
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
+# CreateView to create a new blog post
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    template_name = 'blog/post_form.html'
     fields = ['title', 'content']
+    template_name = 'blog/post_form.html'
+    success_url = reverse_lazy('post-list')
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.author = self.request.user  # Assign the logged-in user as the author
         return super().form_valid(form)
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+# UpdateView to edit an existing blog post
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    template_name = 'blog/post_form.html'
     fields = ['title', 'content']
-    
-
-    
+    template_name = 'blog/post_form.html'
+    success_url = reverse_lazy('post-list')
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        if form.instance.author != self.request.user:
+            return HttpResponseRedirect(reverse_lazy('post-list'))  # Redirect if user is not the author
         return super().form_valid(form)
 
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
-
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+# DeleteView to delete an existing blog post
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('post-list')
 
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
+    def get_queryset(self):
+        # Ensure only the author can delete the post
+        queryset = super().get_queryset()
+        return queryset.filter(author=self.request.user)
+
+# Function-based view for user profile (with login required)
+@login_required
+def user_profile(request):
+    return render(request, 'blog/profile.html')
+
 
 
 
