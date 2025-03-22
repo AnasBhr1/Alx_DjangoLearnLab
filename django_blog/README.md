@@ -36,3 +36,17 @@ CRUD Operations: Describe the features that allow users to create, read, update,
 User Permissions: Explain how the permission system works, including the LoginRequiredMixin and UserPassesTestMixin.
 
 Testing: Mention how to test the features, including creating a new post, editing, and deleting it.
+
+## Comment System
+
+The comment system allows users to interact with blog posts by posting, editing, and deleting comments. 
+
+### Features:
+1. **Post Comments**: Logged-in users can post comments on blog posts.
+2. **Edit Comments**: Only the author of a comment can edit it.
+3. **Delete Comments**: Only the author of a comment can delete it.
+
+### Usage:
+- To add a comment, navigate to the post's detail page and use the comment form.
+- To edit a comment, click "Edit" next to your comment.
+- To delete a comment, click "Delete" next to your comment.
