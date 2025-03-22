@@ -72,11 +72,13 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
     template_name = 'blog/post_form.html'
-    success_url = reverse_lazy('post-list')
+    fields = ['title', 'content']
+    
+
+    
 
     def form_valid(self, form):
         form.instance.author = self.request.user
