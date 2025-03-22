@@ -30,3 +30,9 @@ This system allows users to register, log in, log out, and manage their profile 
 - **Login**: Users can log in using their credentials.
 - **Logout**: Users can log out.
 - **Profile**: Users can view and update their email (and other fields if extended).
+
+CRUD Operations: Describe the features that allow users to create, read, update, and delete blog posts.
+
+User Permissions: Explain how the permission system works, including the LoginRequiredMixin and UserPassesTestMixin.
+
+Testing: Mention how to test the features, including creating a new post, editing, and deleting it.
