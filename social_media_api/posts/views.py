@@ -11,6 +11,9 @@ from rest_framework.exceptions import NotFound
 from django.contrib.auth import get_user_model
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import viewsets, permissions
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
 
 User = get_user_model()
 
@@ -81,3 +84,28 @@ class UnlikePostView(generics.GenericAPIView):
         like.delete()
 
         return Response({"message": "Post unliked successfully."}, status=200)
+    
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()  # Get all posts
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Assign the post to the current logged-in user
+
+    def get_queryset(self):
+        """This will return posts for the logged-in user only"""
+        return Post.objects.filter(author=self.request.user)
+
+# Comment ViewSet
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()  # Get all comments
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Assign the comment to the current logged-in user
+
+    def get_queryset(self):
+        """This will return comments for posts created by the logged-in user"""
+        return Comment.objects.filter(post__author=self.request.user)
