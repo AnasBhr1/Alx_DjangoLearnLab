@@ -1,11 +1,13 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import status, views
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, LoginSerializer
 from django.contrib.auth import authenticate
+from rest_framework import status, permissions
+from rest_framework.decorators import api_view
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 class RegisterView(views.APIView):
     def post(self, request):
@@ -25,3 +27,25 @@ class LoginView(views.APIView):
                 return Response({'token': token.key})
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+User = get_user_model()
+
+@api_view(['POST'])
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    user = request.user
+    if user == user_to_follow:
+        return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.following.add(user_to_follow)
+    return Response({"detail": f"Followed {user_to_follow.username}."}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    user = request.user
+    if user == user_to_unfollow:
+        return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.following.remove(user_to_unfollow)
+    return Response({"detail": f"Unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
