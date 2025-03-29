@@ -1,25 +1,17 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from .models import Post
 from rest_framework import serializers
-from rest_framework import generics, permissions
-from rest_framework.response import Response
 from .models import Post, Like
-from .serializers import PostSerializer
 from rest_framework.exceptions import NotFound
-from django.contrib.auth import get_user_model
-from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post, Like
-from notifications.models import Notification  # Assuming you have a Notification model
+from notifications.models import Notification  
 from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
