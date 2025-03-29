@@ -14,6 +14,13 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Post, Like
+from notifications.models import Notification  # Assuming you have a Notification model
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
