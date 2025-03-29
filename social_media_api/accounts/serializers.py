@@ -17,8 +17,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        Token.objects.create(user=user)  # Ensure token is created on registration
+        user = get_user_model().objects.create_user(**validated_data)  # Ensure proper user creation
+        Token.objects.create(user=user)  # Create authentication token for new user
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -27,6 +27,6 @@ class LoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         user = authenticate(**data)
-        if user:
-            return user
-        raise serializers.ValidationError("Invalid Credentials")
+        if not user:
+            raise serializers.ValidationError("Invalid Credentials")
+        Token.objects.get_or_create(user=user)
