@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class RegisterView(APIView):
+    def post(self, request):
+        return Response({"message": "User registered successfully"})
+
+class LoginView(APIView):
+    def post(self, request):
+        return Response({"message": "User logged in successfully"})
+
+class ProfileView(APIView):
+    def get(self, request):
+        return Response({"message": "User profile data"})
+=======
 from django.contrib.auth import authenticate
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -35,3 +51,4 @@ class UserProfileView(APIView):
         user = request.user
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+>>>>>>> 81ca2c6 (Initial commit to sync with GitHub)
