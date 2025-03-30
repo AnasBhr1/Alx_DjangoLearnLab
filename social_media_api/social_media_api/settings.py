@@ -27,6 +27,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
+# Security settings for production
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'  # Prevents your site from being embedded in a frame.
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Protects against content sniffing attacks.
+SECURE_SSL_REDIRECT = True  # Forces HTTPS on your site.
 
 # Application definition
 
